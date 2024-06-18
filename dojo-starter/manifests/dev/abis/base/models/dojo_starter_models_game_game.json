@@ -381,6 +381,10 @@
         "type": "core::starknet::contract_address::ContractAddress"
       },
       {
+        "name": "winner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
         "name": "board",
         "type": "dojo_starter::models::game::Board"
       }

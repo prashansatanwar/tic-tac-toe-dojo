@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x14ac42d94c7e030d0837a3cac11ac5c92079324007d98ee691c1a15951356dc"
-original_class_hash = "0x14ac42d94c7e030d0837a3cac11ac5c92079324007d98ee691c1a15951356dc"
+class_hash = "0x1550b8551387771c221d7089785d44d4b20a484781c4815dfdc72e57fd74dfa"
+original_class_hash = "0x1550b8551387771c221d7089785d44d4b20a484781c4815dfdc72e57fd74dfa"
 abi = "manifests/dev/abis/base/models/dojo_starter_models_game_game.json"
 name = "dojo_starter::models::game::game"
 
@@ -16,6 +16,11 @@ key = false
 
 [[members]]
 name = "player2"
+type = "ContractAddress"
+key = false
+
+[[members]]
+name = "winner"
 type = "ContractAddress"
 key = false
 

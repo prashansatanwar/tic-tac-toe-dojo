@@ -93,7 +93,7 @@ mod tests {
         game_state = get!(world, 0, (Game));
 
         assert_eq!(game_state.player1, player1);
-        assert_eq!(game_state.player2, player2);    
+        assert_eq!(game_state.player2, player2);   
     }
 
     #[test]
@@ -206,9 +206,8 @@ mod tests {
         actions_system.play_game(game_state.id, BoardPosition{row: 2, col: 0});
 
         game_state = get!(world, 0, (Game));
-        
-        assert_eq!(game_state.winner, player1);
 
+        assert_eq!(game_state.winner, player1);
 
     }
 

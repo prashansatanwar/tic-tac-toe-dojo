@@ -32,6 +32,13 @@ struct Game {
     board: Board
 }
 
+mod errors {
+    const INVALID_MOVE: felt252 = 'Invalid move';
+    const GAME_OVER: felt252 = 'Game Over';
+    const PLAYERS_FULL: felt252 = 'Can not add more players';
+    const PLAYERS_NEEDED: felt252 = 'Need more players';
+}
+
 #[generate_trait]
 impl GameImpl of GameTrait {
     fn new(id: u32, host: ContractAddress) -> Game {
@@ -61,6 +68,7 @@ impl GameImpl of GameTrait {
 
     fn join(mut game: Game, player: ContractAddress) -> Game {
         let const_player = starknet::contract_address_const::<'const_player'>();
+        assert((game.player1 == const_player || game.player2 == const_player), errors::PLAYERS_FULL);
 
         if(game.player1 == const_player) {
             game.player1 = player;
@@ -73,10 +81,9 @@ impl GameImpl of GameTrait {
     }
 
     fn play(mut game: Game, player: ContractAddress, position: BoardPosition) -> Game {
-
-        if(game.winner == game.player1 || game.winner == game.player2) {
-            return game;
-        }
+        let const_player = starknet::contract_address_const::<'const_player'>();
+        assert((game.player1 != const_player && game.player2 != const_player), errors::PLAYERS_NEEDED);
+        assert((game.winner == const_player), errors::GAME_OVER);
 
         let player_value: u8 = if player == game.player1 {1} else {2};
         
@@ -85,21 +92,21 @@ impl GameImpl of GameTrait {
                 0 => game.board.c00 = player_value,
                 1 => game.board.c01 = player_value,
                 2 => game.board.c02 = player_value,
-                _ => panic!("Invalid col: {}", position.col),
+                _ => assert(false, errors::INVALID_MOVE)
             },
             1 => match position.col {
                 0 => game.board.c10 = player_value,
                 1 => game.board.c11 = player_value,
                 2 => game.board.c12 = player_value,
-                _ => panic!("Invalid col: {}", position.col),
+                _ => assert(false, errors::INVALID_MOVE)
             },
             2 => match position.col {
                 0 => game.board.c20 = player_value,
                 1 => game.board.c21 = player_value,
                 2 => game.board.c22 = player_value,
-                _ => panic!("Invalid col: {}", position.col),
+                _ => assert(false, errors::INVALID_MOVE)
             },
-            _ => panic!("Invalid row: {}", position.row),
+            _ => assert(false, errors::INVALID_MOVE)
         }
 
 
