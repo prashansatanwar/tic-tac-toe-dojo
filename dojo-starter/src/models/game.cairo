@@ -28,6 +28,7 @@ struct Game {
     id: u32,
     player1: ContractAddress,
     player2: ContractAddress,
+    winner: ContractAddress,
     board: Board
 }
 
@@ -53,6 +54,7 @@ impl GameImpl of GameTrait {
             id: id,
             player1: player,
             player2: player,
+            winner: player,
             board: board
         }
     }
@@ -71,8 +73,12 @@ impl GameImpl of GameTrait {
     }
 
     fn play(mut game: Game, player: ContractAddress, position: BoardPosition) -> Game {
-        let player_value: u8 = if player == game.player1 {1} else {2};
 
+        if(game.winner == game.player1 || game.winner == game.player2) {
+            return game;
+        }
+
+        let player_value: u8 = if player == game.player1 {1} else {2};
         
         match position.row {
             0 => match position.col {
@@ -96,7 +102,58 @@ impl GameImpl of GameTrait {
             _ => panic!("Invalid row: {}", position.row),
         }
 
+
+        let win = is_win(game.board);
+
+        if(win) {
+            game.winner = player;
+        }
+
         game
 
     }
+}
+
+fn is_win(board: Board) -> bool {
+    let mut x = board.c00;
+    let mut y = board.c01;
+    let mut z = board.c02;
+
+    let mut res = is_win_helper(x,y,z);
+
+    y = board.c10; z = board.c20;
+    res = res || is_win_helper(x,y,z);
+
+    x = board.c10; y = board.c11; z = board.c12;
+    res = res || is_win_helper(x,y,z);
+
+    x = board.c01; y = board.c11; z = board.c21;
+    res = res || is_win_helper(x,y,z);
+
+    x = board.c20; y = board.c21; z = board.c22;
+    res = res || is_win_helper(x,y,z);
+
+    x = board.c02; y = board.c12; z = board.c22;
+    res = res || is_win_helper(x,y,z);
+
+    x = board.c00; y = board.c11; z = board.c22;
+    res = res || is_win_helper(x,y,z);
+
+    x = board.c02; y = board.c11; z = board.c20;
+    res = res || is_win_helper(x,y,z);
+
+    res 
+
+}
+
+fn is_win_helper(x: u8, y:u8, z:u8) -> bool{
+    if (x == 0 && y == 0 && z == 0) {
+        return false;
+    }
+
+    if (x == y && y == z) {
+        return true;
+    }
+
+    false
 }

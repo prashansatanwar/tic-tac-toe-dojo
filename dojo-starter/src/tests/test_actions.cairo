@@ -169,4 +169,47 @@ mod tests {
 
     }
 
+    #[test]
+    #[available_gas(300000000)]
+    fn test_win() {
+        let mut models = array![game::TEST_CLASS_HASH];
+        let world = spawn_test_world(models);
+        let contract_address = world.deploy_contract('salt', actions::TEST_CLASS_HASH.try_into().unwrap(), array![].span());
+        let actions_system = IActionsDispatcher { contract_address };
+
+        // create game
+        let caller = starknet::contract_address_const::<0x1>();
+        set_contract_address(caller);
+        actions_system.create_game();
+
+        let mut game_state = get!(world, 0, (Game));
+
+        // join players
+        let player1 = starknet::contract_address_const::<0x2>();
+        let player2 = starknet::contract_address_const::<0x3>();
+        set_contract_address(player1);
+        actions_system.join_game(game_state.id);
+        set_contract_address(player2);
+        actions_system.join_game(game_state.id);
+
+
+        // play
+        set_contract_address(player1);
+        actions_system.play_game(game_state.id, BoardPosition{row: 1, col: 1});
+        set_contract_address(player2);
+        actions_system.play_game(game_state.id, BoardPosition{row: 0, col: 0});
+        set_contract_address(player1);
+        actions_system.play_game(game_state.id, BoardPosition{row: 0, col: 2});
+        set_contract_address(player2);
+        actions_system.play_game(game_state.id, BoardPosition{row: 0, col: 1});
+        set_contract_address(player1);
+        actions_system.play_game(game_state.id, BoardPosition{row: 2, col: 0});
+
+        game_state = get!(world, 0, (Game));
+        
+        assert_eq!(game_state.winner, player1);
+
+
+    }
+
 }
