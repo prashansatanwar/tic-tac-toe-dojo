@@ -21,8 +21,6 @@ mod actions {
             let game_id = world.uuid();
             let caller = get_caller_address();
 
-            // println!("HOST {:?}", caller);
-
             let mut game = GameTrait::new(game_id, caller);
 
             set!(world, (game))

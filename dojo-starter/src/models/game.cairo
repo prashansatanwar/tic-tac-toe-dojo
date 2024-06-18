@@ -18,7 +18,7 @@ struct Board {
 #[derive(Copy, Drop, Serde, Introspect)]
 struct BoardPosition {
     row: u8,
-    column: u8
+    col: u8
 }
 
 #[derive(Copy, Drop, Serde)]
@@ -75,23 +75,23 @@ impl GameImpl of GameTrait {
 
         
         match position.row {
-            0 => match position.column {
+            0 => match position.col {
                 0 => game.board.c00 = player_value,
                 1 => game.board.c01 = player_value,
                 2 => game.board.c02 = player_value,
-                _ => panic!("Invalid column: {}", position.column),
+                _ => panic!("Invalid col: {}", position.col),
             },
-            1 => match position.column {
+            1 => match position.col {
                 0 => game.board.c10 = player_value,
                 1 => game.board.c11 = player_value,
                 2 => game.board.c12 = player_value,
-                _ => panic!("Invalid column: {}", position.column),
+                _ => panic!("Invalid col: {}", position.col),
             },
-            2 => match position.column {
+            2 => match position.col {
                 0 => game.board.c20 = player_value,
                 1 => game.board.c21 = player_value,
                 2 => game.board.c22 = player_value,
-                _ => panic!("Invalid column: {}", position.column),
+                _ => panic!("Invalid col: {}", position.col),
             },
             _ => panic!("Invalid row: {}", position.row),
         }
